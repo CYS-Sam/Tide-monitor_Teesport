@@ -14,38 +14,61 @@
 
   <style>
     :root {
-      --bg: #07111f;
-      --panel: #0d1e31;
-      --panel-2: #10263d;
-      --border: #28435d;
-      --text: #eef6ff;
-      --muted: #9fb3c8;
-      --predict: #4ba3ff;
-      --actual: #ff9f43;
-      --good: #36d399;
-      --warn: #fbbf24;
-      --bad: #fb7185;
-      --shadow: 0 12px 28px rgba(0,0,0,.26);
+      --bg: #eef7fc;
+      --panel: #ffffff;
+      --panel-2: #f5fbff;
+      --border: #c8deec;
+      --text: #12324a;
+      --muted: #607d91;
+      --brand-blue: #0874b9;
+      --brand-blue-dark: #00598f;
+      --brand-blue-light: #b9def4;
+      --brand-orange: #f5a400;
+      --predict: #0874b9;
+      --actual: #f5a400;
+      --good: #168f6a;
+      --warn: #d88900;
+      --bad: #d84c5f;
+      --shadow: 0 12px 30px rgba(8, 73, 116, .12);
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
       color: var(--text);
       background:
-        radial-gradient(circle at 15% 0%, rgba(37,99,235,.18), transparent 32%),
-        linear-gradient(180deg, #07182b 0%, var(--bg) 100%);
+        radial-gradient(circle at 8% 0%, rgba(185,222,244,.9), transparent 30%),
+        radial-gradient(circle at 95% 8%, rgba(245,164,0,.12), transparent 24%),
+        linear-gradient(180deg, #f9fdff 0%, var(--bg) 100%);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       min-height: 100vh;
     }
     .wrap { width: min(1320px, calc(100% - 28px)); margin: 0 auto; }
-    header { padding: 26px 0 14px; }
-    h1 { margin: 0; font-size: clamp(1.55rem, 3vw, 2.35rem); letter-spacing: -.02em; }
+    header { padding: 22px 0 14px; }
+    .brand-header {
+      display: flex; align-items: center; gap: 20px; padding: 18px 22px;
+      background: rgba(255,255,255,.94); border: 1px solid var(--border);
+      border-top: 5px solid var(--brand-blue); border-radius: 18px;
+      box-shadow: var(--shadow); position: relative; overflow: hidden;
+    }
+    .brand-header::after {
+      content: ""; position: absolute; right: -45px; top: -75px;
+      width: 180px; height: 180px; border-radius: 50%;
+      border: 26px solid rgba(245,164,0,.12); pointer-events: none;
+    }
+    .brand-logo {
+      width: 82px; height: 82px; object-fit: contain; flex: 0 0 auto;
+      background: #fff; border-radius: 15px; padding: 5px;
+      box-shadow: 0 6px 18px rgba(8,116,185,.12);
+    }
+    .brand-copy { min-width: 0; position: relative; z-index: 1; }
+    h1 { margin: 0; color: var(--brand-blue-dark); font-size: clamp(1.55rem, 3vw, 2.35rem); letter-spacing: -.02em; }
     .subtitle { margin: 7px 0 0; color: var(--muted); }
+    .brand-accent { width: 66px; height: 4px; margin-top: 12px; border-radius: 999px; background: var(--brand-orange); }
     .status-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px; }
     .pill {
       display: inline-flex; align-items: center; gap: 8px;
       border: 1px solid var(--border); border-radius: 999px;
-      padding: 8px 12px; background: rgba(13,30,49,.72); color: var(--muted);
+      padding: 8px 12px; background: rgba(255,255,255,.88); color: var(--muted);
       font-size: .87rem;
     }
     .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--warn); box-shadow: 0 0 12px currentColor; }
@@ -57,16 +80,16 @@
     }
     .tab-btn, button {
       appearance: none; border: 1px solid var(--border); background: var(--panel);
-      color: var(--text); border-radius: 10px; padding: 10px 14px; cursor: pointer;
+      color: var(--brand-blue-dark); border-radius: 10px; padding: 10px 14px; cursor: pointer;
       font-weight: 700; transition: .18s ease; white-space: nowrap;
     }
     .tab-btn:hover, button:hover { transform: translateY(-1px); border-color: #46749d; }
-    .tab-btn.active { background: #153b61; border-color: var(--predict); }
+    .tab-btn.active { background: var(--brand-blue); border-color: var(--brand-blue); color: #fff; }
     .tab { display: none; padding-bottom: 32px; }
     .tab.active { display: block; }
     .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
     .card, .chart-card, .table-card, .notice {
-      background: linear-gradient(180deg, rgba(16,38,61,.95), rgba(11,28,46,.95));
+      background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(245,251,255,.98));
       border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow);
     }
     .card { padding: 20px; }
@@ -95,11 +118,13 @@
     table { width: 100%; border-collapse: collapse; min-width: 700px; }
     th, td { padding: 11px 14px; border-bottom: 1px solid rgba(40,67,93,.65); text-align: right; }
     th:first-child, td:first-child { text-align: left; }
-    th { background: #122a43; position: sticky; top: 0; z-index: 2; color: #c9d9e8; }
-    tr:hover td { background: rgba(75,163,255,.06); }
+    th { background: #e7f4fb; position: sticky; top: 0; z-index: 2; color: var(--brand-blue-dark); }
+    tr:hover td { background: rgba(8,116,185,.06); }
     .empty { text-align: center !important; color: var(--muted); padding: 28px; }
     .footer { color: var(--muted); font-size: .82rem; padding: 0 0 30px; }
     @media (max-width: 820px) {
+      .brand-header { gap: 13px; padding: 15px; }
+      .brand-logo { width: 62px; height: 62px; }
       .cards { grid-template-columns: 1fr; }
       .metric-grid { grid-template-columns: 1fr; }
       .time-card { grid-template-columns: 1fr; }
@@ -109,8 +134,14 @@
 </head>
 <body>
   <header class="wrap">
-    <h1>CY2 Tide Monitor_Teesport</h1>
-    <p class="subtitle">Predicted and sensor-measured tide comparison</p>
+    <div class="brand-header">
+      <img class="brand-logo" src="logo.png" alt="Company logo" />
+      <div class="brand-copy">
+        <h1>CY2 Tide Monitor_Teesport</h1>
+        <p class="subtitle">Predicted and sensor-measured tide comparison</p>
+        <div class="brand-accent"></div>
+      </div>
+    </div>
     <div class="status-row">
       <span class="pill"><span id="sensorDot" class="dot"></span><span id="sensorStatus">Loading sensor data...</span></span>
       <span class="pill">Timezone: Europe/London</span>
@@ -201,7 +232,7 @@
     // Do not expose a private Read API Key in a public GitHub repository.
     // ================================================================
     const CONFIG = {
-      CHANNEL_ID: "YOUR_CHANNEL_ID",
+      CHANNEL_ID: "3474360",
       READ_API_KEY: "",
       CSV_PATH: "tide_predictions.csv",
       ZONE: "Europe/London",
@@ -211,8 +242,8 @@
     };
 
     const { DateTime } = luxon;
-    Chart.defaults.color = "#c7d5e4";
-    Chart.defaults.borderColor = "rgba(159,179,200,.17)";
+    Chart.defaults.color = "#49687d";
+    Chart.defaults.borderColor = "rgba(96,125,145,.20)";
 
     const state = {
       predictions: [],
@@ -422,8 +453,8 @@
       $("levelRange").textContent = `${ukShort(start)} → ${ukShort(end)} (UK)`;
       const data = {
         datasets: [
-          { label: "Predicted Level", data: buildPredictionSeries(start, end, "level"), borderColor: "#4ba3ff", backgroundColor: "#4ba3ff", pointRadius: 0 },
-          { label: "Actual Level · Field 2", data: actualSeries(start, end, "level"), borderColor: "#ff9f43", backgroundColor: "#ff9f43", pointRadius: 0 }
+          { label: "Predicted Level", data: buildPredictionSeries(start, end, "level"), borderColor: "#0874b9", backgroundColor: "#0874b9", pointRadius: 0 },
+          { label: "Actual Level · Field 2", data: actualSeries(start, end, "level"), borderColor: "#f5a400", backgroundColor: "#f5a400", pointRadius: 0 }
         ]
       };
       if (state.levelChart) state.levelChart.destroy();
@@ -437,8 +468,8 @@
       opts.plugins.annotation.annotations.zeroLine = { type: "line", yMin: 0, yMax: 0, borderColor: "rgba(238,246,255,.45)", borderWidth: 1 };
       const data = {
         datasets: [
-          { label: "Predicted Rate", data: buildPredictionSeries(start, end, "rate"), borderColor: "#4ba3ff", backgroundColor: "#4ba3ff", pointRadius: 0 },
-          { label: "Actual Rate · Field 4", data: actualSeries(start, end, "rate"), borderColor: "#ff9f43", backgroundColor: "#ff9f43", pointRadius: 0 }
+          { label: "Predicted Rate", data: buildPredictionSeries(start, end, "rate"), borderColor: "#0874b9", backgroundColor: "#0874b9", pointRadius: 0 },
+          { label: "Actual Rate · Field 4", data: actualSeries(start, end, "rate"), borderColor: "#f5a400", backgroundColor: "#f5a400", pointRadius: 0 }
         ]
       };
       if (state.rateChart) state.rateChart.destroy();
