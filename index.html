@@ -34,7 +34,7 @@
 <section id="raw" class="tab"><div class="toolbar"><h2>ThingSpeak Latest 60 Records</h2><button id="refresh">Refresh</button></div><div class="table-card"><div class="table-scroll"><table><thead><tr><th>UK Time</th><th>Entry ID</th><th>Tide Level (m)</th><th>Tide Rate (m/hr)</th></tr></thead><tbody id="body"><tr><td colspan="4" class="empty">Loading...</td></tr></tbody></table></div></div></section></main><footer class="wrap footer">Prediction source: tide_predictions.csv · Actual source: ThingSpeak</footer>
 <script>
 "use strict";
-const CONFIG={CHANNEL_ID:"3474360",READ_API_KEY:"",CSV_PATH:"tide_predictions.csv",ZONE:"Europe/London",REFRESH_MS:60000,SENSOR_STALE_MINUTES:5,CHART_ACTUAL_RESULTS:3000,KALMAN_Q:0.001,KALMAN_R:0.20};
+const CONFIG={CHANNEL_ID:"3474360",READ_API_KEY:"",CSV_PATH:"tide_predictions.csv",ZONE:"Europe/London",REFRESH_MS:60000,SENSOR_STALE_MINUTES:5,CHART_ACTUAL_RESULTS:3000,KALMAN_Q:0.0005,KALMAN_R:0.50};
 const{DateTime}=luxon,$=id=>document.getElementById(id),state={pred:[],actual:[],latest:[],lo:0,ro:0,rko:0,lc:null,rc:null,rkc:null};Chart.defaults.color="#49687d";Chart.defaults.borderColor="rgba(96,125,145,.20)";
 const num=v=>v==null||v===""||!Number.isFinite(Number(v))?null:Number(v),plain=(v,u)=>Number.isFinite(v)?v.toFixed(2)+" "+u:"--",signed=(v,u)=>Number.isFinite(v)?(v>=0?"+":"")+v.toFixed(2)+" "+u:"--",uk=d=>d?.isValid?d.setZone(CONFIG.ZONE).toFormat("dd LLL yyyy, HH:mm:ss ZZZZ"):"--",short=d=>d.setZone(CONFIG.ZONE).toFormat("dd LLL HH:mm");
 function message(t){$("msg").textContent=t;$("msg").classList.toggle("show",!!t)}
